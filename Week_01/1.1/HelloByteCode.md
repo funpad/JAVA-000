@@ -32,20 +32,22 @@
 ```
 $ javap -p -c -s -v HelloByteCode
 ```
+
+
 ## 输出
 ```
-Classfile /Users/James/Documents/Geek/github/JAVA-000/Week_01/1.1/HelloByteCode.class
+Classfile 绝对路径/HelloByteCode.class  // class文件
   Last modified 2020年10月16日; size 1052 bytes
-  SHA-256 checksum 8c9f48899a2fe637185e77c7c0c4d5f3644ad8315bce132856a81b077cfe735d
+  SHA-256 checksum 8c9f48899a2fe637185e77c7c0c4d5f3644ad8315bce132856a81b077cfe735d // 校验和，之前的Java版本使用的MD5
   Compiled from "HelloByteCode.java"
 public class HelloByteCode
-  minor version: 0   // 小版本号
+  minor version: 0   // 次版本号
   major version: 57  // 主版本号
-  flags: (0x0021) ACC_PUBLIC, ACC_SUPER
+  flags: (0x0021) ACC_PUBLIC, ACC_SUPER // 类的访问标志
   this_class: #7                          // HelloByteCode
   super_class: #2                         // java/lang/Object
   interfaces: 0, fields: 0, methods: 4, attributes: 1 // 0个接口，0个字段，4个方法（包括默认的构造方法），attributes？
-Constant pool:  // 常量池
+Constant pool:  // 常量池，理解为class文件中的资源仓库，存放字面量(Literal)和符号引用(Symbolic References)
    #1 = Methodref          #2.#3          // java/lang/Object."<init>":()V
    #2 = Class              #4             // java/lang/Object
    #3 = NameAndType        #5:#6          // "<init>":()V
@@ -106,9 +108,10 @@ Constant pool:  // 常量池
 {
   public HelloByteCode(); // 构造方法
     descriptor: ()V // V表示返回void
-    flags: (0x0001) ACC_PUBLIC // 访问级别为public
+    flags: (0x0001) ACC_PUBLIC // 访问标志为public
     Code:
-      stack=1, locals=1, args_size=1  // 操作数栈最大深度为1，局部变量占用1个Slot，方法参数个数为1
+      // 操作数栈最大深度为1，局部变量占用1个Slot，方法参数个数为1
+      stack=1, locals=1, args_size=1
          0: aload_0
          1: invokespecial #1                  // Method java/lang/Object."<init>":()V
          4: return
@@ -118,11 +121,11 @@ Constant pool:  // 常量池
         Start  Length  Slot  Name   Signature
             0       5     0  this   LHelloByteCode;
 
-  public static void main(java.lang.String[]);
-    descriptor: ([Ljava/lang/String;)V
+  public static void main(java.lang.String[]);  // main方法
+    descriptor: ([Ljava/lang/String;)V  // [表示以为数组，L表示对象类型，V表示返回值为void类型
     flags: (0x0009) ACC_PUBLIC, ACC_STATIC
     Code:
-      stack=2, locals=2, args_size=1
+      stack=2, locals=2, args_size=1  // 操作数栈最大深度为2，局部变量占用2个槽Slot，参数个数为1
          0: new           #7                  // class HelloByteCode
          3: dup
          4: invokespecial #9                  // Method "<init>":()V
@@ -148,6 +151,8 @@ Constant pool:  // 常量池
     descriptor: ()I
     flags: (0x0001) ACC_PUBLIC
     Code:
+      // 操作数栈深度为2，局部变量表有7个槽位，
+      // 参数为1个（当前对象实例的引用：this）
       stack=2, locals=7, args_size=1
          0: iconst_4
          1: istore_1
@@ -174,6 +179,7 @@ Constant pool:  // 常量池
         31: invokevirtual #24                 // Method java/io/PrintStream.println:(I)V
         34: iload         6
         36: ireturn
+      // 行号表：源码行号与字节码行号（偏移量）的映射，在debug时或是获取发生Exception的源码行号时用到
       LineNumberTable:
         line 15: 0
         line 16: 5
@@ -182,8 +188,14 @@ Constant pool:  // 常量池
         line 19: 20
         line 20: 26
         line 21: 34
+      // 局部变量表：描述栈帧中局部变量的信息
       LocalVariableTable:
+        // Start与Length描述了变量（Name列）的作用域，
+        // 数值对应的上方“Code:”区域的字节码“行号”，
+        // Slot列显示变量占用的槽位数，Signature描述变量的类型。
         Start  Length  Slot  Name   Signature
+            // this变量作用域是整个方法体：对应字节码行号为0～(0+37-1)，
+            // 即0～36 => 0: iconst_4 <-> 36: ireturn
             0      37     0  this   LHelloByteCode;
             2      35     1     a   I
             5      32     2     b   I
@@ -224,7 +236,7 @@ Constant pool:  // 常量池
         Start  Length  Slot  Name   Signature
             0      25     0  this   LHelloByteCode;
             2      23     1  flag   I
-      StackMapTable: number_of_entries = 2
+      StackMapTable: number_of_entries = 2  // 操作数栈映射表
         frame_type = 252 /* append */
           offset_delta = 8
           locals = [ int ]
